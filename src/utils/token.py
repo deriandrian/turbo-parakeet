@@ -1,11 +1,12 @@
 import jwt
 from datetime import datetime, timedelta
+import os
 
 
 def encode(data):
     payload = {
         "data": data,
-        "exp": datetime.utcnow() + timedelta(seconds=1000),
+        "exp": datetime.utcnow() + timedelta(seconds=3600),
         "iat": datetime.utcnow()
     }
     

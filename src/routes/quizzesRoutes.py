@@ -17,8 +17,11 @@ def createQuiz():
         "quizzes": []
     }    
 
-    if os.path.exists(quizzesFileLocation) and os.path.getsize(quizzesFileLocation) > 0:
+    # if os.path.exists(quizzesFileLocation) and os.path.getsize(quizzesFileLocation) > 0:
+    try:
         quizData = readFile(quizzesFileLocation)
+    except:
+        print("gaada filenya jow")
 
     quizData["total-quiz-available"] += 1
     quizData["quizzes"].append(body)
@@ -31,29 +34,48 @@ def createQuiz():
 @router.route('/quizzes/<quizId>')
 def getQuiz(quizId):
     # nyari quiznya
-    quizzesData = readFile(quizzesFileLocation)
-
     quizFound = False
-    for quiz in quizzesData["quizzes"]:
-        if quiz["quiz-id"] == int(quizId):
-            quizData = quiz
-            quizFound = True
-            break
+    response = {
+        "error" : True
+    }
 
-    if not quizFound:
-        return jsonify("quiz-id " + str(quizId) + " tidak ditemukan")
+    try:
+        quizzesData = readFile(quizzesFileLocation)
+    except:
+        response["message"] = "error load quiz data"
+        return jsonify(response)
+
+    else:
+        for quiz in quizzesData["quizzes"]:
+            if quiz["quiz-id"] == int(quizId):
+                quizData = quiz
+                quizFound = True
+                
+                response["error"] = False
+                response["data"] = quizData
+                break
+
+    if quizFound:
+    # return jsonify("quiz-id " + str(quizId) + " tidak ditemukan")
     # nyari soalnya
-    questionData = readFile(questionsFileLocation)
+        try:
+            questionData = readFile(questionsFileLocation)
+        except:
+            print("file questions gaada")
+        else:
+            for question in questionData["questions"]:
+                if question["quiz-id"] == int(quizId):
+                    quizData["question-list"].append(question)
+    else:
+        response["message"] = "no quiz found"
 
-    for question in questionData["questions"]:
-        if question["quiz-id"] == int(quizId):
-            quizData["question-list"].append(question)
-
-    return jsonify(quizData)
+    return jsonify(response)
 
 # delete quis sama ubah informasi tentang kuisnya
 @router.route('/quizzes/<quizId>', methods=["PUT", "DELETE"])
+@verifyLogin
 def updateDeleteQuiz(quizId):
+    print("usernamnya adalah", g.username)
     if request.method == "DELETE":
         return deleteQuiz(quizId)
     elif request.method == "PUT":

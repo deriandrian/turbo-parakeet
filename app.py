@@ -5,20 +5,28 @@ from src.routes import router
 app = Flask(__name__)
 app.register_blueprint(router)
 
-@app.route('/encode')
-def jwtEncode():
-    encoded = jwt.encode({"data": "makers"}, "kucing-merah", algorithm="HS256")
-    return encoded
+@app.router('/penjumlahan/<firstNumber>/<secondNumber>')
+def penjumlahan(firstNumber, secondNumber):
+    return jsonify({
+        "hasil_jumlah" : firstNumber+secondNumber,
+        "mancing_mania" : "mantap"
+    })
 
-@app.route('/decode', methods=["POST"])
-def jwtDecode():
-    decoded = jwt.decode(request.json["token"], "kucing-merah", algorithms=["HS256"])
-    return str(decoded)
 
-@app.route('/ngetesaborsi')
-def ngetesaborsi():
-    abort(404)
+# @app.route('/encode')
+# def jwtEncode():
+#     encoded = jwt.encode({"data": "makers"}, "kucing-merah", algorithm="HS256")
+#     return encoded
 
-@app.errorhandler(404)
-def errorhandler404(e):
-    return "error 404 JOW"
+# @app.route('/decode', methods=["POST"])
+# def jwtDecode():
+#     decoded = jwt.decode(request.json["token"], "kucing-merah", algorithms=["HS256"])
+#     return str(decoded)
+
+# @app.route('/ngetesaborsi')
+# def ngetesaborsi():
+#     abort(404)
+
+# @app.errorhandler(404)
+# def errorhandler404(e):
+#     return "error 404 JOW"
