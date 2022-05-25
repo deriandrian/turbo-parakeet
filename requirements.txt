@@ -15,7 +15,7 @@ MarkupSafe==1.1.0
 mccabe==0.6.1
 post==2018.11.20
 public==2018.11.20
-PyJWT==1.7.1
+PyJWT==2.4.0
 pylint==2.2.2
 python-dotenv==0.10.1
 query-string==2018.11.20
